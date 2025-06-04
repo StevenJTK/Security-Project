@@ -10,6 +10,8 @@ import jakarta.persistence.Id;
 public class AppUser {
     private String username;
     private String password;
+    private String role;
+    private boolean consentGiven;
 
     public AppUser() {}
 
@@ -31,5 +33,21 @@ public class AppUser {
 
     public Long getId() {
         return id;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public boolean isConsentGiven() {
+        return consentGiven;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public void setConsentGiven(boolean consentGiven) {
+        this.consentGiven = consentGiven;
     }
 }
