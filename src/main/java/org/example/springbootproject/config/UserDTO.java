@@ -1,5 +1,7 @@
 package org.example.springbootproject.config;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
@@ -15,6 +17,10 @@ public class UserDTO {
             message = "Password must have 1 uppercase, 2 digits, and 2 special characters and must be 8 characters long"
     )
     private String password;
+
+    @Schema(defaultValue = "false")
+    @AssertTrue(message = "Consent given")
+    private boolean consentGiven;
 
     public String getUsername() {
         return username;
@@ -38,5 +44,12 @@ public class UserDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+    public boolean isConsentGiven() {
+        return consentGiven;
+    }
+
+    public void setConsentGiven(boolean consentGiven) {
+        this.consentGiven = consentGiven;
     }
 }
