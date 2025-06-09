@@ -19,6 +19,14 @@ public class UserService  {
         appUserRepository.save(appUser);
     }
 
+    public boolean removeUser(Long id) {
+        if (appUserRepository.existsById(id)) {
+            appUserRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
     private AppUser toAppUser(UserDTO dto) {
         AppUser au = new AppUser();
         au.setUsername(dto.getUsername());
