@@ -3,8 +3,10 @@ package org.example.springbootproject.controller;
 import jakarta.validation.Valid;
 import org.example.springbootproject.config.SecurityConfig;
 import org.example.springbootproject.config.UserDTO;
+import org.example.springbootproject.repository.AppUserRepository;
 import org.example.springbootproject.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
