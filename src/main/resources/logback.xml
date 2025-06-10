@@ -25,7 +25,13 @@
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="FILE" />
     </root>
-    <logger name="se.example.app" level="DEBUG" additivity="false">
+    <logger name="org.example.springbootproject" level="DEBUG" additivity="false">
         <appender-ref ref="FILE" />
     </logger>
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="org.hibernate" level="WARN"/>
+    <logger name="org.hsqldb" level="WARN"/>
+    <logger name="com.zaxxer.hikari" level="WARN"/>
+    <logger name="org.springframework.boot.autoconfigure" level="WARN"/>
+
 </configuration>
