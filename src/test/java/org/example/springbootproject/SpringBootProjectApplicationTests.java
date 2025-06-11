@@ -75,7 +75,7 @@ class SpringBootProjectApplicationTests {
 
     }
 
-   /* Mock Experiment
+
     @Test
     @WithMockUser(username = "Steven", roles = {"ADMIN"})
     void testDeleteUserFromDatabaseVersionTwo() throws Exception {
@@ -84,5 +84,5 @@ class SpringBootProjectApplicationTests {
 
         mockMvc.perform(delete("/users/{id}", 34L))
                 .andExpect(status().isNoContent());
-    } */
+    }
 }

@@ -1,19 +1,25 @@
 package org.example.springbootproject.service;
 
+import org.example.springbootproject.config.SecurityConfig;
 import org.example.springbootproject.config.UserDTO;
 import org.example.springbootproject.logging.LoggingComponent;
 import org.example.springbootproject.model.AppUser;
 import org.example.springbootproject.repository.AppUserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService  {
     private final AppUserRepository appUserRepository;
     private final LoggingComponent loggingComponent;
 
-    public UserService(AppUserRepository appUserRepository, LoggingComponent loggingComponent) {
+    SecurityConfig securityConfig;
+
+    public UserService(AppUserRepository appUserRepository, LoggingComponent loggingComponent, SecurityConfig securityConfig) {
         this.appUserRepository = appUserRepository;
         this.loggingComponent = loggingComponent;
+        this.securityConfig = securityConfig;
     }
 
     public void saveUser(UserDTO dto) {
@@ -40,6 +46,23 @@ public class UserService  {
         au.setConsentGiven(dto.isConsentGiven());
 
         return au;
+    }
+
+    public AppUser verifyLoginCredentials(String username, String password) {
+       Optional<AppUser> au =  appUserRepository.getUserByUsername(username);
+
+        if(au.isPresent()) {
+            System.out.println(password);
+            System.out.println(au.get().getPassword());
+
+            if(securityConfig.passwordEncoder().matches(password, au.get().getPassword())) {
+
+            System.out.println("User found");
+                return au.get();
+            }
+        }
+        System.out.println("User not found");
+        return null;
     }
 
 }
