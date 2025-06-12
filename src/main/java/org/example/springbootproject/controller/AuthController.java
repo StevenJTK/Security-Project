@@ -27,20 +27,18 @@ public class AuthController {
         this.tokenService = tokenService;
     }
 
-    @Operation(
-            summary = "Hämta JWT-token",
-            description = "Returnerar en JWT-token vid korrekt inloggning.",
-            security = @SecurityRequirement(name = "")
-    )
     @PostMapping
     public ResponseEntity<String> token(@RequestBody LoginRequest loginRequest) {
+        System.out.println("1");
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.username(),
                         loginRequest.password()
                 )
         );
+                System.out.println("2");
                 String token = tokenService.generateToken(auth);
+                System.out.println("3");
                 return ResponseEntity.ok(token);
     }
 }

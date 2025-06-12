@@ -1,42 +1,43 @@
 package org.example.springbootproject;
 
+import org.example.springbootproject.config.SecurityConfig;
 import org.example.springbootproject.config.UserDTO;
 import org.example.springbootproject.model.AppUser;
 import org.example.springbootproject.repository.AppUserRepository;
+import org.example.springbootproject.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.doNothing;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-
-import static org.mockito.Mockito.when;
-import org.springframework.security.test.context.support.WithMockUser;
-
 import java.util.Optional;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@AutoConfigureMockMvc
 class SpringBootProjectApplicationTests {
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    SecurityConfig securityConfig;
 
     @Autowired
     private AppUserRepository appUserRepository;
@@ -44,45 +45,63 @@ class SpringBootProjectApplicationTests {
     @BeforeEach
     void setUp() {
         appUserRepository.deleteAll();
+        AppUser au = new AppUser();
+        au.setUsername("admin");
+        au.setPassword(securityConfig.passwordEncoder().encode("admin"));
+        au.setRole("admin");
+        au.setConsentGiven(true);
+        userRepository.save(au);
     }
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Test
-    @WithMockUser(username = "Steven", roles = {"ADMIN"})
+    @WithMockUser(username = "Steven", roles = {"admin"})
     void testSaveUser() throws Exception {
-        AppUser appUser = new AppUser();
-        appUser.setUsername("Steven");
-        appUser.setPassword("123");
-        appUser.setRole("ADMIN");
-        appUser.setConsentGiven(true);
-        appUserRepository.save(appUser);
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUsername("Steven");
+        userDTO.setPassword("123NOraid4u()=+");
+        userDTO.setRole("admin");
+        userDTO.setConsentGiven(true);
+        mockMvc.perform(post ("/register").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(userDTO)))
+                .andExpect(status().isOk());
         Optional<AppUser> u = appUserRepository.getUserByUsername("Steven");
 
         assertEquals("Steven", u.get().getUsername());
         Assertions.assertNotEquals("222", u.get().getPassword());
-        assertEquals("ADMIN", u.get().getRole());
-        Assertions.assertTrue(u.get().isConsentGiven());
+        assertEquals("admin", u.get().getRole());
+        assertTrue(u.get().isConsentGiven());
     }
 
     @Autowired
     private AppUserRepository userRepository;
+
+    @Autowired
     private MockMvc mockMvc;
 
 
-    @Test // Passing test using H2
-    @WithMockUser(username = "Steven", roles = {"ADMIN"})
+    @Test
+    @WithMockUser(username = "Steven", roles = {"admin"})
     void testDeleteUserFromDatabase() throws Exception {
-        appUserRepository.deleteById(34L);
-
+        AppUser appUser = appUserRepository.getUserByUsername("admin").get();
+        assertTrue(appUserRepository.getUserByUsername("admin").isPresent());
+        mockMvc.perform(delete("/remove/" + appUser.getId()));
+        Assertions.assertFalse(appUserRepository.getUserByUsername("admin").isPresent());
     }
 
-
     @Test
-    @WithMockUser(username = "Steven", roles = {"ADMIN"})
-    void testDeleteUserFromDatabaseVersionTwo() throws Exception {
+  //  @WithMockUser(username = "Steven", roles = "admin")
+    void testVerifyLoginCredentials() throws Exception {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUsername("Steven");
+        userDTO.setPassword("123NOraid4u()=+");
+        userDTO.setRole("admin");
+        userDTO.setConsentGiven(true);
+        mockMvc.perform(post ("/register").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(userDTO)))
+                .andExpect(status().isOk());
+        AppUser appUser = userService.verifyLoginCredentials("Steven", "123NOraid4u()=+");
+        Assertions.assertNotNull(appUser);
 
-        doNothing().when(appUserRepository).deleteById(34L);
-
-        mockMvc.perform(delete("/users/{id}", 34L))
-                .andExpect(status().isNoContent());
     }
 }

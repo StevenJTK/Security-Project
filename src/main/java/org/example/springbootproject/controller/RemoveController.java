@@ -16,8 +16,8 @@ public class RemoveController {
         this.userService = userService;
     }
 
-    @DeleteMapping
-    public ResponseEntity<String> remove(@RequestParam Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> remove(@PathVariable Long id) {
         if (userService.removeUser(id)) {
             return ResponseEntity.ok("Remove successful");
         }

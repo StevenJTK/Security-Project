@@ -48,6 +48,7 @@ public class UserService  {
         return au;
     }
 
+    // Returnerar användaren eller null
     public AppUser verifyLoginCredentials(String username, String password) {
        Optional<AppUser> au =  appUserRepository.getUserByUsername(username);
 
