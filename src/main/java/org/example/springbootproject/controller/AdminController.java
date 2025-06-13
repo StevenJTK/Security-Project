@@ -1,6 +1,5 @@
 package org.example.springbootproject.controller;
 
-
 import org.example.springbootproject.config.SecurityConfig;
 import org.example.springbootproject.model.AppUser;
 import org.example.springbootproject.service.UserService;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/admin")

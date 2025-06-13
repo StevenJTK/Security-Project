@@ -1,8 +1,5 @@
 package org.example.springbootproject.controller;
 
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.example.springbootproject.model.LoginRequest;
 import org.example.springbootproject.service.TokenService;
 import org.springframework.http.ResponseEntity;

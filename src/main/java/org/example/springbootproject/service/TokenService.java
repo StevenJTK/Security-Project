@@ -6,26 +6,27 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.stream.Collectors;
 
+/**
+ * Class that handles tokens required for Jwt
+ */
 @Service
 public class TokenService {
 
     private final JwtEncoder jwtEncoder;
 
-
     public TokenService(JwtEncoder jwtEncoder) {
         this.jwtEncoder = jwtEncoder;
     }
 
-
-    // Ta emot en autentiserad användare
-    // Skapa en JWT token med information om användaren
-    // Retunera token som en sträng
-
+    /**
+     * Generates token required for authentication
+     * @param authentication
+     * @return
+     */
     public String generateToken(Authentication authentication) {
         Instant now = Instant.now();
 
