@@ -12,16 +12,19 @@ public class RemoveController {
 
     private final UserService userService;
 
+    //konstruktor
     public RemoveController(UserService userService) {
         this.userService = userService;
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> remove(@PathVariable Long id) {
+        //tar bort användaren och returnerar true om den fanns
         if (userService.removeUser(id)) {
             return ResponseEntity.ok("Remove successful");
         }
 
+        //annars
         UserNotFound usernotfound = new UserNotFound(id);
         throw usernotfound;
     }

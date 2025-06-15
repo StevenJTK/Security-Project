@@ -18,12 +18,14 @@ public class UserController {
 
     SecurityConfig securityConfig;
 
+    //konstruktor
     public UserController(UserService userService, SecurityConfig securityConfig) {
         this.userService = userService;
         this.securityConfig = securityConfig;
     }
 
 
+    //loggar in och verifierar användaren
     @GetMapping
     public ResponseEntity <String> verifyAdminControl(@RequestParam String username, @RequestParam String password) {
         AppUser au = userService.verifyLoginCredentials(username, password);
@@ -31,6 +33,7 @@ public class UserController {
         if(au == null) {
             return ResponseEntity.notFound().build();
         } else {
+            //både user och admin har tillgång till sidan
             if(au.getRole().equals("user") || au.getRole().equals("admin")) {
                 return ResponseEntity.ok("Welcome User");
             }

@@ -18,13 +18,16 @@ public class AdminController {
 
     SecurityConfig securityConfig;
 
+    //konstruktor
     public AdminController(UserService userService, SecurityConfig securityConfig) {
         this.userService = userService;
         this.securityConfig = securityConfig;
     }
 
+    //verifierar och loggar in användaren
     @GetMapping
     public ResponseEntity <String> verifyAdminControl(@RequestParam String username, @RequestParam String password) {
+        //hämtar användaren (om användarnamn och lösen är rätt)
         AppUser au = userService.verifyLoginCredentials(username, password);
 
         if(au == null) {

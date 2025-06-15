@@ -42,6 +42,7 @@ class SpringBootProjectApplicationTests {
     @Autowired
     private AppUserRepository appUserRepository;
 
+    //tömmer databasen och lägger till en användaren innan varje test
     @BeforeEach
     void setUp() {
         appUserRepository.deleteAll();

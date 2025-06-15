@@ -16,17 +16,21 @@ public class RegisterController {
 
     private final UserService userService;
 
+    //konstruktor
     public RegisterController(UserService userService, SecurityConfig securityConfig) {
         this.userService = userService;
         this.securityConfig = securityConfig;
     }
 
+    //sparar en användare i databasen
     @PostMapping
     public ResponseEntity < String > submitForm(@Valid @RequestBody UserDTO user, BindingResult result) {
 
+        //om något av DTO-kraven INTE uppfylls
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors().toString());
         }
+        //om ok, hashar lösenordet
         user.setPassword(securityConfig.passwordEncoder().encode(user.getPassword()));
         userService.saveUser(user);
         return ResponseEntity.ok("Success");
